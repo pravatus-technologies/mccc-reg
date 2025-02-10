@@ -28,26 +28,9 @@
                 <p><strong>ID Type:</strong> <%= formData.id_type %></p>
 
                 <h3>Uploaded Images</h3>
-                <div class="row">
-                    <div class="col-md-4 text-center">
-                        <p><strong>Selfie:</strong></p>
-                        <% if (formData.files.selfie) { %>
-                            <img src="/<%= formData.files.selfie %>" alt="Selfie" class="img-thumbnail" width="150">
-                        <% } %>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <p><strong>ID Front:</strong></p>
-                        <% if (formData.files.id_front) { %>
-                            <img src="/<%= formData.files.id_front %>" alt="ID Front" class="img-thumbnail" width="150">
-                        <% } %>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <p><strong>ID Back:</strong></p>
-                        <% if (formData.files.id_back) { %>
-                            <img src="/<%= formData.files.id_back %>" alt="ID Back" class="img-thumbnail" width="150">
-                        <% } %>
-                    </div>
-                </div>
+                <p><strong>Selfie:</strong> <%= formData.files.selfie ? path.basename(formData.files.selfie) : 'Not Provided' %></p>
+                <p><strong>ID Front:</strong> <%= formData.files.id_front ? path.basename(formData.files.id_front) : 'Not Provided' %></p>
+                <p><strong>ID Back:</strong> <%= formData.files.id_back ? path.basename(formData.files.id_back) : 'Not Provided' %></p>
 
                 <p><strong>Agree to Terms:</strong> <%= formData.agree_to_terms %></p>
 
