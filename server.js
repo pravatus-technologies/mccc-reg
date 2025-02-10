@@ -5,11 +5,19 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
-const csv = require('csv-parser'); // Added for reading CSV
+const mysql = require('mysql2/promise'); // Use MySQL2 for MariaDB
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const AGENT_ID = process.env.AGENT_ID || 'DEFAULT';
+
+// MariaDB Connection Pool
+const db = mysql.createPool({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASS || '',
+    database: process.env.DB_NAME || 'mobile_reg'
+});
 
 // Middleware
 app.use(express.static('public'));
@@ -32,38 +40,22 @@ const upload = multer({ storage });
 // Views Setup
 app.set('view engine', 'ejs');
 
-// Function to read existing roll numbers from CSV
-const getExistingRollNumbers = (csvFilePath) => {
-    return new Promise((resolve, reject) => {
-        let rollNumbers = new Set();
-        if (!fs.existsSync(csvFilePath)) {
-            return resolve(rollNumbers); // Return empty set if no file exists
-        }
-
-        fs.createReadStream(csvFilePath)
-            .pipe(csv())
-            .on('data', (row) => {
-                if (row["Roll Number"]) {
-                    rollNumbers.add(row["Roll Number"]);
-                }
-            })
-            .on('end', () => resolve(rollNumbers))
-            .on('error', (error) => reject(error));
-    });
+// Function to check if a roll number already exists in the database
+const rollNumberExists = async (rollNumber) => {
+    const [rows] = await db.execute('SELECT roll_number FROM registrations WHERE roll_number = ?', [rollNumber]);
+    return rows.length > 0;
 };
 
 // Function to generate a unique Roll Number
 const generateUniqueRollNumber = async () => {
     const date = new Date();
     const dateString = date.toISOString().split('T')[0].replace(/-/g, '');
-    const csvFilePath = `./${dateString}${AGENT_ID}.csv`;
-    let existingRollNumbers = await getExistingRollNumbers(csvFilePath);
 
     let rollNumber;
     do {
         const sequenceNumber = Math.floor(1000 + Math.random() * 9000);
         rollNumber = `${dateString}${AGENT_ID}${sequenceNumber}`;
-    } while (existingRollNumbers.has(rollNumber)); // Ensure uniqueness
+    } while (await rollNumberExists(rollNumber));
 
     return rollNumber;
 };
@@ -83,7 +75,7 @@ app.get('/', (req, res) => {
 
 app.post('/start', async (req, res) => {
     req.session.user = { started: true };
-    req.session.rollNumber = await generateUniqueRollNumber(); // Generate and store roll number
+    req.session.rollNumber = await generateUniqueRollNumber();
     res.redirect('/register');
 });
 
@@ -92,61 +84,42 @@ app.get('/register', requireSession, (req, res) => {
 });
 
 app.post('/preview', requireSession, upload.fields([{ name: 'selfie' }, { name: 'id_front' }, { name: 'id_back' }]), (req, res) => {
-    if (!req.files || !req.body.family_name || !req.body.first_name) {
-        return res.redirect('/register');
-    }
-
-    const lastName = req.body.family_name.replace(/\s+/g, '_');
-    const firstName = req.body.first_name.replace(/\s+/g, '_');
-
-    const renameFile = (file, suffix) => {
-        if (file) {
-            const newFilename = `${lastName}_${firstName}_${suffix}.png`;
-            const newPath = `uploads/${newFilename}`;
-            fs.renameSync(file.path, newPath);
-            return newPath;
-        }
-        return null;
-    };
-
-    const selfiePath = renameFile(req.files.selfie ? req.files.selfie[0] : null, "Selfie");
-    const idFrontPath = renameFile(req.files.id_front ? req.files.id_front[0] : null, "IDFront");
-    const idBackPath = renameFile(req.files.id_back ? req.files.id_back[0] : null, "IDBack");
-
     req.session.formData = { 
         ...req.body, 
-        files: req.files, roll_number: req.session.rollNumber 
-    };
-    res.render('preview', { formData: req.session.formData });
+        files: req.files, roll_number: req.session.rollNumber };
+        res.render('preview', { formData: req.session.formData, path });
 });
 
-app.post('/submit', requireSession, (req, res) => {
+app.post('/submit', requireSession, async (req, res) => {
     if (!req.session.formData) return res.redirect('/register');
 
     const { formData } = req.session;
-    const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
-    const filePath = `./${today}${AGENT_ID}.csv`;
 
-    const headers = "Roll Number,Membership Type,Family Name,First Name,Middle Name,Gender,Mobile Phone,Email Address,Birthday,Address,Municipality,Baranggay,Province,Zip,ID Type,Selfie,ID Front,ID Back,Agree to Terms\n";
-    const row = [
-        formData.roll_number, formData.membership_type, formData.family_name, formData.first_name,
-        formData.middle_name || '', formData.gender, formData.mobile_phone, formData.email_address,
-        formData.birthday, formData.address, formData.municipality, formData.baranggay || '',
-        formData.province, formData.zip || '', formData.id_type,
-        formData.files.selfie ? formData.files.selfie[0].path : '',
-        formData.files.id_front ? formData.files.id_front[0].path : '',
-        formData.files.id_back ? formData.files.id_back[0].path : '',
-        formData.agree_to_terms
-    ].join(',');
+    try {
+        await db.execute(
+            `INSERT INTO registrations (
+                roll_number, membership_type, family_name, first_name, middle_name, gender, 
+                mobile_phone, email_address, birthday, address, municipality, baranggay, 
+                province, zip, id_type, selfie, id_front, id_back, agree_to_terms
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                formData.roll_number, formData.membership_type, formData.family_name, formData.first_name,
+                formData.middle_name || null, formData.gender, formData.mobile_phone, formData.email_address,
+                formData.birthday, formData.address, formData.municipality, formData.baranggay || null,
+                formData.province, formData.zip || null, formData.id_type,
+                formData.files.selfie ? formData.files.selfie[0].filename : null,
+                formData.files.id_front ? formData.files.id_front[0].filename : null,
+                formData.files.id_back ? formData.files.id_back[0].filename : null,
+                formData.agree_to_terms
+            ]
+        );
 
-    if (!fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, headers);
+        req.session.destroy();
+        res.render('success', { title: "Registration Successful" });
+    } catch (error) {
+        console.error("Database Error:", error);
+        res.status(500).send("Internal Server Error");
     }
-
-    fs.appendFileSync(filePath, row + '\n');
-
-    req.session.destroy();
-    res.render('success', { title: "Registration Successful" });
 });
 
 app.listen(PORT, '0.0.0.0', () => {
