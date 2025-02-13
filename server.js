@@ -133,8 +133,8 @@ app.post('/submit', requireSession, async (req, res) => {
             `INSERT INTO registrations (
                 roll_number, membership_type, family_name, first_name, middle_name, gender, 
                 mobile_phone, email_address, birthday, address, municipality, baranggay, 
-                province, zip, id_type, selfie, id_front, id_back, agree_to_terms
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                province, zip, id_type, selfie, id_front, id_back, agree_to_terms, prs_date, civil_status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 formData.roll_number || null,
                 formData.membership_type || null,
@@ -154,18 +154,31 @@ app.post('/submit', requireSession, async (req, res) => {
                 formData.files.selfie ? path.basename(formData.files.selfie) : null,
                 formData.files.id_front ? path.basename(formData.files.id_front) : null,
                 formData.files.id_back ? path.basename(formData.files.id_back) : null,
-                formData.agree_to_terms || null
+                formData.agree_to_terms || null,
+                formData.prs_date || null,
+                formData.civil_status || null
             ]
         );
 
         req.session.destroy();
-        res.render('success', { title: "Registration Successful" });
+        res.redirect(`/success?rollNumber=${encodeURIComponent(formData.roll_number)}&firstName=${encodeURIComponent(formData.first_name)}`);
     } catch (error) {
         console.error("Database Error:", error);
         res.status(500).send("Internal Server Error");
     }
 });
 
+app.get('/success', (req, res) => {
+
+    if (!req.session.rollNumber || !req.session.firstName) {
+        return res.redirect('/register');
+    }
+    
+    const rollNumber = req.query.rollNumber || "N/A";  // Default to "N/A" if missing
+    const firstName = req.query.firstName || "Applicant"; 
+
+    res.render('success', { rollNumber, firstName });
+});
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running at http://0.0.0.0:${PORT}`);
