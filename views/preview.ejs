@@ -28,9 +28,9 @@
                 <p><strong>ID Type:</strong> <%= formData.id_type %></p>
 
                 <h3>Uploaded Files</h3>
-                <p><strong>Selfie:</strong> <%= formData.files && formData.files.selfie ? path.basename(formData.files.selfie[0].path) : 'Not Provided' %></p>
-                <p><strong>ID Front:</strong> <%= formData.files && formData.files.id_front ? path.basename(formData.files.id_front[0].path) : 'Not Provided' %></p>
-                <p><strong>ID Back:</strong> <%= formData.files && formData.files.id_back ? path.basename(formData.files.id_back[0].path) : 'Not Provided' %></p>
+                <p><strong>Selfie:</strong> <%= (formData.files && formData.files.selfie) ? path.basename(formData.files.selfie) : 'Not Provided' %></p>
+                <p><strong>ID Front:</strong> <%= (formData.files && formData.files.id_front) ? path.basename(formData.files.id_front) : 'Not Provided' %></p>
+                <p><strong>ID Back:</strong> <%= (formData.files && formData.files.id_back) ? path.basename(formData.files.id_back) : 'Not Provided' %></p>
 
                 <p><strong>Agree to Terms:</strong> <%= formData.agree_to_terms %></p>
 
