@@ -5,41 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preview Registration</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 700px;
+            margin-top: 30px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            padding: 20px;
+        }
+        .preview-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .file-info {
+            background-color: #eef5ff;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h2 class="text-center">Preview Your Information</h2>
-        <form action="/submit" method="POST">
-            <div class="p-4 border rounded bg-light shadow">
-                <p><strong>Roll Number:</strong> <%= formData.roll_number %></p>
-                <p><strong>Membership Type:</strong> <%= formData.membership_type %></p>
-                <p><strong>Family Name:</strong> <%= formData.family_name %></p>
-                <p><strong>First Name:</strong> <%= formData.first_name %></p>
-                <p><strong>Middle Name:</strong> <%= formData.middle_name || 'N/A' %></p>
-                <p><strong>Gender:</strong> <%= formData.gender %></p>
-                <p><strong>Mobile Phone:</strong> <%= formData.mobile_phone %></p>
-                <p><strong>Email Address:</strong> <%= formData.email_address %></p>
-                <p><strong>Birthday:</strong> <%= formData.birthday %></p>
-                <p><strong>Address:</strong> <%= formData.address %></p>
-                <p><strong>Municipality:</strong> <%= formData.municipality %></p>
-                <p><strong>Barangay:</strong> <%= formData.baranggay || 'N/A' %></p>
-                <p><strong>Province:</strong> <%= formData.province %></p>
-                <p><strong>Zip Code:</strong> <%= formData.zip || 'N/A' %></p>
-                <p><strong>ID Type:</strong> <%= formData.id_type %></p>
+    <div class="container">
+        <h2 class="preview-title">Preview Your Information</h2>
+        <div class="card">
+            <form action="/submit" method="POST">
+                <div class="p-3">
+                    <p><strong>Roll Number:</strong> <%= formData.roll_number %></p>
+                    <p><strong>Membership Type:</strong> <%= formData.membership_type %></p>
+                    <p><strong>Family Name:</strong> <%= formData.family_name %></p>
+                    <p><strong>First Name:</strong> <%= formData.first_name %></p>
+                    <p><strong>Middle Name:</strong> <%= formData.middle_name || 'N/A' %></p>
+                    <p><strong>Gender:</strong> <%= formData.gender %></p>
+                    <p><strong>Mobile Phone:</strong> <%= formData.mobile_phone %></p>
+                    <p><strong>Email Address:</strong> <%= formData.email_address %></p>
+                    <p><strong>Birthday:</strong> <%= formData.birthday %></p>
+                    <p><strong>Civil Status:</strong> <%= formData.civil_status || 'N/A' %></p>
+                    <p><strong>Address:</strong> <%= formData.address %></p>
+                    <p><strong>Municipality:</strong> <%= formData.municipality %></p>
+                    <p><strong>Barangay:</strong> <%= formData.baranggay || 'N/A' %></p>
+                    <p><strong>Province:</strong> <%= formData.province %></p>
+                    <p><strong>Zip Code:</strong> <%= formData.zip || 'N/A' %></p>
+                    <p><strong>ID Type:</strong> <%= formData.id_type %></p>
 
-                <h3>Uploaded Files</h3>
-                <p><strong>Selfie:</strong> <%= (formData.files && formData.files.selfie) ? path.basename(formData.files.selfie) : 'Not Provided' %></p>
-                <p><strong>ID Front:</strong> <%= (formData.files && formData.files.id_front) ? path.basename(formData.files.id_front) : 'Not Provided' %></p>
-                <p><strong>ID Back:</strong> <%= (formData.files && formData.files.id_back) ? path.basename(formData.files.id_back) : 'Not Provided' %></p>
+                    <!-- Uploaded Files Section -->
+                    <h4 class="mt-3">Uploaded Files</h4>
+                    <div class="file-info">
+                        <p><strong>Selfie:</strong> <%= formData.files.selfie || 'Not Provided' %></p>
+                        <p><strong>ID Front:</strong> <%= formData.files.id_front || 'Not Provided' %></p>
+                        <p><strong>ID Back:</strong> <%= formData.files.id_back || 'Not Provided' %></p>
+                    </div>
 
-                <p><strong>Agree to Terms:</strong> <%= formData.agree_to_terms %></p>
+                    <p class="mt-3"><strong>Agree to Terms:</strong> <%= formData.agree_to_terms %></p>
 
-                <div class="text-center mt-3">
-                    <button type="submit" class="btn btn-success">Confirm & Submit</button>
-                    <a href="/register" class="btn btn-warning">Edit Information</a>
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">Confirm & Submit</button>
+                        <a href="/register" class="btn btn-secondary">Edit Information</a>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

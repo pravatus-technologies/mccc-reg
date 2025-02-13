@@ -1,17 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-    <div class="container text-center">
-        <h1>Welcome</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome - Magnificat Central Credit Cooperative</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f8f9fa;
+      }
+      .card {
+        max-width: 600px;
+        width: 100%;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .logo {
+        max-width: 150px;
+        display: block;
+        margin: 0 auto 15px;
+      }
+      .card-body {
+        text-align: center;
+      }
+      .justified-text {
+        text-align: justify;
+      }
+      .left-aligned-list {
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <img src="/images/mccc-reg-logo.png" alt="MCCC Logo" class="logo" />
+      <div class="card-body">
+        <h5 class="card-title">Welcome to the Registration Portal</h5>
+        <p class="card-text justified-text">
+          <strong
+            >Please note, only Filipino Citizens who are 18 years old and above
+            are eligible for an MCCC membership.</strong
+          >
+        </p>
+        <!-- Membership Agreement Text -->
+        <div class="mb-4">
+          <p class="justified-text">
+            I hereby apply for a membership with
+            <strong>MAGNIFICAT CENTRAL CREDIT COOPERATIVE (MCCC)</strong>. I
+            hereby agree to obey faithfully its rules and regulations as set
+            down in its Articles of Incorporation and By-Laws, policies, and
+            decisions of the general membership and those of the Board of
+            Directors.
+          </p>
+          <p class="justified-text"><strong>I hereby pledge to:</strong></p>
+          <ul class="left-aligned-list">
+            <li>
+              Attend and finish the prescribed Pre-Registration Seminar (PRS).
+            </li>
+            <li>
+              Pay the one-time membership fee of <strong>Php500.00</strong>.
+            </li>
+            <li>Participate in the following program:</li>
+            <ul>
+              <li>
+                Subscribe for at least thirty (30) shares and pay at least 10
+                shares (total value Php3,000.00) as stated in the terms and
+                conditions prescribed in the Membership Agreement.
+              </li>
+              <li>
+                Open a Savings Account (SA) with MCCC with an initial deposit of
+                at least <strong>Php500.00</strong>.
+              </li>
+              <li>
+                Participate in Continuous Capital Build-Up of
+                <strong>Php100.00/month</strong>.
+              </li>
+            </ul>
+          </ul>
+          <p class="justified-text">
+            Comply with the membership and subscription agreement.
+          </p>
+          <p class="justified-text">
+            <strong
+              >For your consideration, I do hereby include my Personal
+              Data.</strong
+            >
+          </p>
+        </div>
         <form action="/start" method="POST">
-            <button type="submit" class="btn btn-primary">Start Registration</button>
+          <button type="submit" class="btn btn-primary w-100 mt-3">
+            Start Registration
+          </button>
         </form>
+      </div>
     </div>
-</body>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

@@ -1,16 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
-  <link href="/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-  <div class="container text-center mt-5">
-    <h2 class="text-success">🎉 Registration Successful! 🎉</h2>
-    <p>Thank you for registering. Your details have been successfully submitted.</p>
-    <a href="/" class="btn btn-primary">Go Back to Home</a>
-  </div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Application Submitted - MCCC</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .card {
+        max-width: 600px;
+        width: 100%;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        background: #fff;
+      }
+      .logo {
+        max-width: 150px;
+        display: block;
+        margin: 0 auto 15px;
+      }
+      .thank-you {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+      }
+      .financial-details {
+        background-color: #eef5ff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <img src="/images/mccc-reg-logo.png" alt="MCCC Logo" class="logo" />
+      <h4 class="mb-3">Application Submitted</h4>
+      <p class="thank-you">
+        <strong>Application No:</strong> <%= rollNumber %>
+      </p>
+      <p class="thank-you">Thank you, <%= firstName %>!</p>
+      <p>
+        We've received your application and it is now subject to further
+        processing and verification.
+      </p>
+
+      <div class="financial-details">
+        <h5>Financial Obligations for Regular Membership</h5>
+        <ul>
+          <li><strong>₱500</strong> - Membership Fee</li>
+          <li><strong>₱500</strong> - Initial Savings Deposit</li>
+          <li><strong>₱3,000</strong> - Share Capital (30 shares)</li>
+        </ul>
+        <p><strong>Total Required: ₱4,000</strong></p>
+      </div>
+
+      <p class="mt-3">
+        For any inquiries, please contact our support team at
+        membership@magnificat.coop
+      </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
