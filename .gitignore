@@ -1,5 +1,6 @@
 node_modules
 uploads
 *.csv
+*.env
 .env
-.env
+.DS_Store
