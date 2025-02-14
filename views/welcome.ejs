@@ -37,10 +37,39 @@
     </style>
   </head>
   <body>
+    <% if (showInvalidRefModal) { %>
+      <script>
+          document.addEventListener("DOMContentLoaded", function() {
+              var modal = new bootstrap.Modal(document.getElementById('invalidRefModal'));
+              modal.show();
+          });
+      </script>
+      
+      <!-- Bootstrap Modal -->
+      <div class="modal fade" id="invalidRefModal" tabindex="-1" aria-labelledby="invalidRefModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                  <div class="modal-header bg-danger text-white">
+                      <h5 class="modal-title" id="invalidRefModalLabel">Invalid Referral Code</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      Please let the person who gave you the link know that the referral code is invalid. 
+                      The application will take you to the regular form
+                  </div>
+                  <div class="modal-footer">
+                      <a href="/" class="btn btn-primary">OK</a>
+                  </div>
+              </div>
+          </div>
+      </div>
+    <% } %>
+      
     <div class="card">
       <img src="/images/mccc-reg-logo.png" alt="MCCC Logo" class="logo" />
       <div class="card-body">
         <h5 class="card-title">Welcome to the Registration Portal</h5>
+
         <p class="card-text justified-text">
           <strong
             >Please note, only Filipino Citizens who are 18 years old and above
