@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise'); // Use MySQL2 for MariaDB
+const { Buffer } = require('buffer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -69,18 +70,49 @@ const requireSession = (req, res, next) => {
 };
 
 // Routes
-app.get('/', (req, res) => {
-    res.render('welcome');
+app.get('/', async (req, res) => {
+    let refid = null;
+
+    if (req.query.refid) {
+        try {
+            // Decode the Base64-encoded referral ID
+            refid = Buffer.from(req.query.refid, 'base64').toString('utf-8');
+
+            // Query the database to check if refid exists in the refcodes table
+            const [rows] = await db.execute('SELECT * FROM refcodes WHERE refid = ?', [refid]);
+
+            if (rows.length === 0) {
+                // If refid does not exist, show modal and redirect
+                return res.render('welcome', { 
+                    showInvalidRefModal: true 
+                });
+            }
+
+            // Store refid in session to persist across requests
+            req.session.refid = refid;
+
+        } catch (error) {
+            console.error("Invalid Base64 encoding for refid:", error);
+            return res.status(400).send("Invalid refid format.");
+        }
+    }
+    res.render('welcome', { showInvalidRefModal: false, refid: req.session.refid });
 });
 
 app.post('/start', async (req, res) => {
     req.session.user = { started: true };
     req.session.rollNumber = await generateUniqueRollNumber();
+
     res.redirect('/register');
 });
 
-app.get('/register', requireSession, (req, res) => {
-    res.render('form', { rollNumber: req.session.rollNumber, agentId: AGENT_ID });
+app.get('/register', requireSession, async (req, res) => {
+    // Render the registration form and pass refid
+    res.render('form', { 
+        rollNumber: req.session.rollNumber, 
+        agentId: AGENT_ID, 
+        refid: req.session.refid || null 
+    });
 });
 
 app.post('/preview', requireSession, upload.fields([
@@ -133,8 +165,9 @@ app.post('/submit', requireSession, async (req, res) => {
             `INSERT INTO registrations (
                 roll_number, membership_type, family_name, first_name, middle_name, gender, 
                 mobile_phone, email_address, birthday, address, municipality, baranggay, 
-                province, zip, id_type, selfie, id_front, id_back, agree_to_terms, prs_date, civil_status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                province, zip, id_type, selfie, id_front, id_back, agree_to_terms, prs_date,
+                civil_status, refid
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 formData.roll_number || null,
                 formData.membership_type || null,
@@ -156,11 +189,11 @@ app.post('/submit', requireSession, async (req, res) => {
                 formData.files.id_back ? path.basename(formData.files.id_back) : null,
                 formData.agree_to_terms || null,
                 formData.prs_date || null,
-                formData.civil_status || null
+                formData.civil_status || null,
+                formData.refid || null
             ]
         );
 
-        req.session.destroy();
         res.redirect(`/success?rollNumber=${encodeURIComponent(formData.roll_number)}&firstName=${encodeURIComponent(formData.first_name)}`);
     } catch (error) {
         console.error("Database Error:", error);
@@ -169,16 +202,32 @@ app.post('/submit', requireSession, async (req, res) => {
 });
 
 app.get('/success', (req, res) => {
-
-    if (!req.session.rollNumber || !req.session.firstName) {
-        return res.redirect('/register');
+    if (!req.query.rollNumber || !req.query.firstName) {
+        return res.redirect('/register'); // Prevent access without valid data
     }
-    
-    const rollNumber = req.query.rollNumber || "N/A";  // Default to "N/A" if missing
-    const firstName = req.query.firstName || "Applicant"; 
 
-    res.render('success', { rollNumber, firstName });
+    const rollNumber = req.query.rollNumber;
+    const firstName = req.query.firstName;
+
+    // Render success page and send response
+    res.render('success', { rollNumber, firstName }, (err, html) => {
+        if (err) {
+            console.error("Error rendering success page:", err);
+            return res.redirect('/register');
+        }
+
+        // Send response to client
+        res.send(html);
+
+        // Destroy session AFTER response is sent
+        req.session.destroy((destroyErr) => {
+            if (destroyErr) {
+                console.error("Error destroying session:", destroyErr);
+            }
+        });
+    });
 });
+
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running at http://0.0.0.0:${PORT}`);
