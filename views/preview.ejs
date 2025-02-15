@@ -5,10 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preview Registration</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css"/>
+    <!-- Google Fonts - Open Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
+      :root {
+      --bs-primary: #2B4593 !important; /* Change to your preferred color */
+      --bs-primary-rgb: 255, 102, 0 !important; /* RGB equivalent */
+      }
+
+      /* Ensure Bootstrap buttons and text use the new primary color */
+      .btn-primary {
+          background-color: var(--bs-primary) !important;
+          border-color: var(--bs-primary) !important;
+      }
+      body {
+        background-color: #f8f9fa;
+        font-family: 'Open Sans', sans-serif !important;
+      }
         .container {
             max-width: 700px;
             margin-top: 30px;
