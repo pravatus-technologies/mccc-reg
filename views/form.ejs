@@ -472,6 +472,34 @@
       </div>
     </div>
 
+    <!-- Email Already Registered Modal -->
+    <div class="modal fade" id="emailErrorModal" tabindex="-1" aria-labelledby="emailErrorModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header bg-danger text-white">
+                  <h5 class="modal-title" id="emailErrorModalLabel">Email Already Registered</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  The email you entered is already associated with an existing registration.
+                  Please use a different email address or reach out to support@magnificat for assistance.
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <% if (emailError) { %>
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var modal = new bootstrap.Modal(document.getElementById('emailErrorModal'));
+            modal.show();
+        });
+      </script>
+    <% } %>
+
     <!-- JavaScript for Form Validation & PRS Field Handling -->
     <script>
       function validateForm() {

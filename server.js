@@ -111,7 +111,8 @@ app.get('/register', requireSession, async (req, res) => {
     res.render('form', { 
         rollNumber: req.session.rollNumber, 
         agentId: AGENT_ID, 
-        refid: req.session.refid || null 
+        refid: req.session.refid || null,
+        emailError: null
     });
 });
 
@@ -122,6 +123,23 @@ app.post('/preview', requireSession, upload.fields([
 ]), async (req, res) => {
     if (!req.files || !req.session.rollNumber) {
         return res.redirect('/register');
+    }
+
+    const email = req.body.email_address;
+
+    // Check if email is already registered
+    const [existingEmail] = await db.execute(
+        'SELECT email_address FROM registrations WHERE email_address = ?', 
+        [email]
+    );
+
+    if (existingEmail.length > 0) {
+        return res.render('form', { 
+            rollNumber: req.session.rollNumber, 
+            agentId: AGENT_ID,
+            refid: req.session.refid || null,
+            emailError: "This email is already registered. Please use a different email."
+        });
     }
 
     const rollNumber = req.session.rollNumber;
