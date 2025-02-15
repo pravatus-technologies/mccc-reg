@@ -1,0 +1,7 @@
+:root {
+    --bs-body-font-family: 'Open Sans', sans-serif !important;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, button, input, textarea, select {
+    font-family: 'Open Sans', sans-serif !important;
+}
