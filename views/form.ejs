@@ -4,15 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registration Form - MCCC</title>
-    <link
-      rel="stylesheet"
-      href="/css/bootstrap.min.css"
-    />
-    <link rel="stylesheet" href="/css/styles.css"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
     <!-- Google Fonts -->
     <!-- Google Fonts - Open Sans -->
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
       /* Ensure Bootstrap buttons and text use the new primary color */
@@ -22,7 +21,7 @@
       }
       body {
         background-color: #f8f9fa;
-        font-family: 'Open Sans', sans-serif !important;
+        font-family: "Open Sans", sans-serif !important;
       }
       /* Navbar Styling */
       .navbar {
@@ -79,13 +78,20 @@
   <body>
     <!-- Navbar -->
     <nav class="navbar navbar-light bg-white border-bottom">
-      <div class="container-fluid d-flex justify-content-center justify-content-md-start">
-          <a class="navbar-brand d-flex align-items-center" href="/">
-              <img src="/images/mccc-reg-logo.png" alt="MCCC Logo" class="logo" style="height: 40px;">
-              <span class="ms-2 text-truncate fw-bold fs-5 d-none d-sm-inline">
-                  Magnificat Central Credit Cooperative
-              </span>
-          </a>
+      <div
+        class="container-fluid d-flex justify-content-center justify-content-md-start"
+      >
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <img
+            src="/images/mccc-reg-logo.png"
+            alt="MCCC Logo"
+            class="logo"
+            style="height: 40px"
+          />
+          <span class="ms-2 text-truncate fw-bold fs-5 d-none d-sm-inline">
+            Magnificat Central Credit Cooperative
+          </span>
+        </a>
       </div>
     </nav>
 
@@ -300,8 +306,8 @@
 
           <!-- ID Type -->
           <div class="mb-3">
-            <label class="form-label required">ID Type</label>
-            <select name="id_type" class="form-select required-field" required>
+            <label class="form-label">ID Type</label>
+            <select name="id_type" class="form-select">
               <option value="">Select ID Type</option>
               <option value="Driver's License">Driver's License</option>
               <option value="Passport">Passport</option>
@@ -315,36 +321,33 @@
 
           <!-- File Uploads -->
           <div class="mb-3">
-            <label class="form-label required">Selfie</label>
+            <label class="form-label">Selfie</label>
             <input
               type="file"
-              class="form-control required-field"
+              class="form-control"
               name="selfie"
               accept="image/*"
               capture="user"
-              required
             />
           </div>
 
           <div class="mb-3">
-            <label class="form-label required">ID Front</label>
+            <label class="form-label">ID Front</label>
             <input
               type="file"
-              class="form-control required-field"
+              class="form-control"
               name="id_front"
               accept="image/*"
-              required
             />
           </div>
 
           <div class="mb-3">
-            <label class="form-label required">ID Back</label>
+            <label class="form-label">ID Back</label>
             <input
               type="file"
-              class="form-control required-field"
+              class="form-control"
               name="id_back"
               accept="image/*"
-              required
             />
           </div>
 
@@ -473,31 +476,53 @@
     </div>
 
     <!-- Email Already Registered Modal -->
-    <div class="modal fade" id="emailErrorModal" tabindex="-1" aria-labelledby="emailErrorModalLabel" aria-hidden="true">
+    <div
+      class="modal fade"
+      id="emailErrorModal"
+      tabindex="-1"
+      aria-labelledby="emailErrorModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-              <div class="modal-header bg-danger text-white">
-                  <h5 class="modal-title" id="emailErrorModalLabel">Email Already Registered</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  The email you entered is already associated with an existing registration.
-                  Please use a different email address or reach out to support@magnificat for assistance.
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
-              </div>
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="emailErrorModalLabel">
+              Email Already Registered
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
+          <div class="modal-body">
+            The email you entered is already associated with an existing
+            registration. Please use a different email address or reach out to
+            support@magnificat for assistance.
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              OK
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
     <% if (emailError) { %>
-      <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var modal = new bootstrap.Modal(document.getElementById('emailErrorModal'));
-            modal.show();
-        });
-      </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var modal = new bootstrap.Modal(
+          document.getElementById("emailErrorModal")
+        );
+        modal.show();
+      });
+    </script>
     <% } %>
 
     <!-- JavaScript for Form Validation & PRS Field Handling -->
